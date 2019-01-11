@@ -6,8 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FanatiQS/teleprompter-client.git"
+  },
+  "keywords": [
+    "teleprompter"
+  ],
   "author": "FanatiQS",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/FanatiQS/teleprompter-client/issues"
+  },
+  "homepage": "https://github.com/FanatiQS/teleprompter-client#readme"
   "dependencies": {
   }
 }
