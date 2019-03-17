@@ -3,7 +3,7 @@
 
 
 // Create new Project connection to the server
-var Project = function Project(inp1, inp2, socket) {
+function Project(inp1, inp2, socket) {
 	// Make work with or without 'new' operator
 	if (!(this instanceof Project)) return new Project(inp1, inp2, socket);
 
