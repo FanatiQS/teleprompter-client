@@ -11,11 +11,10 @@ function Project(inp1, inp2, socket) {
 
 	// Create new websocket if it is not supplied in arguments
 	if (!socket) {
-		// Get 'href' and websocket 'protocol' to use with websocket connection
+		// Get websocket 'protocol' to use with websocket connection
 		var url = (inp1 && inp1.host) || (inp2 && inp2.host) || document.URL;
 		var separator = url.indexOf('://');
 		var protocol = url.slice(0, Math.max(0, separator)).replace('http', 'ws') || 'ws';
-		this.url = protocol + '://' + url.slice((separator !== -1) ? separator + 3 : 0);
 
 		// Error handling for if 'protocol' is not 'ws' or 'wss'
 		if (protocol !== 'ws' && protocol !== 'wss') {
@@ -23,7 +22,7 @@ function Project(inp1, inp2, socket) {
 		}
 
 		// Create new websocket connection
-		socket = new WebSocket(this.url);
+		socket = new WebSocket(protocol + '://' + ((separator !== -1) ? url.slice(separator + 3) : url));
 	}
 
 	// Link to 'socket' for prototypes
