@@ -40,25 +40,6 @@ function Project(inp1, inp2, socket) {
 
 
 
-	// Create authentication object containing 'id' and 'init' data
-	var auth = {
-		id: this.id,
-		init: (inp1 && inp1.init) || (inp2 && inp2.init || undefined)
-	};
-
-	// Set password in authentication object from arguments
-	if (typeof inp2 === 'string') {
-		auth.pwd = inp2;
-		inp2 = null;
-	}
-	else if (inp1 && inp1.pwd) {
-		auth.pwd = inp1.pwd;
-		inp1.pwd = null;
-	}
-	else if (inp2 && inp2.pwd) {
-		auth.pwd = inp2.pwd;
-		inp2.pwd = null;
-	}
 
 
 
@@ -66,25 +47,17 @@ function Project(inp1, inp2, socket) {
 	var self = this;
 
 	// Buffer data for server until connection is open
-	var preOpen = [];
-	this.tx = function (obj) {
-		preOpen.push(obj);
-	};
+	this._buffer = [function () {
+		// Send authentication data to server
+		this.tx({
+			id: this.id,
+			pwd: (typeof inp2 === 'string') ? inp2 : (inp1 && inp1.pwd) || (inp2 && inp2.pwd),
+			init: (inp1 && inp1.init) || (inp2 && inp2.init || undefined)
+		});
+	}];
 
-	// Send authentication data to server
-	this.open = function () {
-		// Delete 'tx' buffer function
-		delete self.tx;
 
-		// Send authentication to server
-		self.tx(auth);
-		auth.pwd = null;
 
-		// Send all buffered 'tx' data
-		for (var i = 0; i < preOpen.length; i++) {
-			self.tx(preOpen[i]);
-		}
-	};
 
 
 
@@ -110,6 +83,13 @@ function Project(inp1, inp2, socket) {
 		self.close();
 	};
 
+// Run buffered functions when connection to server is established
+Project.prototype.open = function () {
+	for (var i = 0; i < this._buffer.length; i++) {
+		this._buffer[i].call(this);
+		delete this._buffer[i];
+	}
+};
 
 
 	// All connected documents for this project
