@@ -5,10 +5,9 @@
 // Create a new audio-amplitude-reader with audio input stream with deviceId 'id'
 function AAR(promise) {
 	this.onopen = promise.then((stream) => {
-		// Create audiocontext with analyser
+		// Create audiocontext and analyser
 		this.context = new (window.AudioContext || window.webkitAudioContext)();
-		this.analyser = this.context.createAnalyser();
-		this.analyser.fftSize = 32;
+		this.analyser = new AnalyserNode(this.context, {fftSize: 32});
 		this.data = new Float32Array(this.analyser.frequencyBinCount);
 		this.stream = stream;
 		this.intervalId = null;
